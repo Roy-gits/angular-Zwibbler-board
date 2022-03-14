@@ -1,0 +1,40 @@
+<div
+  id="mainContainer"
+  #zwibblerContainer
+  zwibbler
+  z-no-auto-init
+  class="flex-row stretch"
+  style="align-self:stretch;position:relative;border:2px solid black"
+  showToolbar="false"
+>
+
+<div class="flex-col">
+<button (click)="ctx.usePickTool()">Pick tool</button>
+
+<button (click)="text()">Text tool</button>
+
+<button (click)="shape()">Shape tool</button> 
+<button (click)="ctx.useLineTool();">Line tool</button>
+<button (click)="save()">Save tool</button>
+<button (click)="clearScreen()">Clear Screen</button>
+<button (click)="loadData()">Load data</button>
+
+
+
+
+</div>
+
+
+<div
+z-canvas
+class="stretch"
+showToolbar="true">
+
+</div>
+</div>
+
+
+
+
+
+
