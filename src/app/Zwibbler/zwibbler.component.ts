@@ -7,57 +7,72 @@ import {
   ViewChild,
   ComponentFactory,
   ComponentRef,
-  SimpleChanges
-} from "@angular/core";
-import { HelloComponent } from "../hello.component";
-import { ExternalRect, ZwibblerClass, ZwibblerContext } from "./zwibbler2";
+  SimpleChanges,
+} from '@angular/core';
+import { HelloComponent } from '../hello.component';
+import { ExternalRect, ZwibblerClass, ZwibblerContext } from './zwibbler2';
 declare let Zwibbler: ZwibblerClass;
 @Component({
-  selector: "app-zwibbler",
-  templateUrl: "./zwibbler.component.html",
-  styleUrls: ["./zwibbler.component.css"]
+  selector: 'app-zwibbler',
+  templateUrl: './zwibbler.component.html',
+  styleUrls: ['./zwibbler.component.css'],
 })
 export class ZwibblerComponent implements OnInit {
   ctx: ZwibblerContext;
-  savedData:any;
-  constructor(private myElement: ElementRef){
-
-  }
+  savedData: any;
+  constructor(
+    private myElement: ElementRef,
+    private resolver: ComponentFactoryResolver
+  ) {}
   async ngOnInit() {
-    let zwibblerDiv = this.myElement.nativeElement.querySelector("[zwibbler]")!;
+    await waitForZwibblerLoad();
+    let zwibblerDiv = this.myElement.nativeElement.querySelector('[zwibbler]')!;
     let scope = Zwibbler.attach(zwibblerDiv, {});
     this.ctx = scope.ctx;
   }
 
-  text(){
+  text() {
     this.ctx.useTextTool();
-    this.ctx.setConfig("multilineText", true)
-    this.ctx.setConfig("autoGroup", true);
+    this.ctx.setConfig('multilineText', true);
+    this.ctx.setConfig('autoGroup', true);
   }
 
-  shape(){
-    this.ctx.useRectangleTool({ fillStyle: "#ffffff" });
-    this.ctx.setConfig("clickToDrawShapes", true);
+  shape() {
+    this.ctx.useRectangleTool({ fillStyle: '#ffffff' });
+    this.ctx.setConfig('clickToDrawShapes', true);
   }
 
-  save(){
+  save() {
     this.savedData = this.ctx.save();
     console.log(this.savedData);
-    alert("data Saved!");
+    alert('data Saved!');
   }
-  loadData(){
-    if(this.savedData){
+  loadData() {
+    if (this.savedData) {
       this.ctx.load(this.savedData);
     }
   }
 
-  clearScreen(){
+  clearScreen() {
     this.ctx.newDocument();
   }
 
-  lineTool(){
+  lineTool() {
     this.ctx.useLineTool();
-    this.ctx.setConfig("autoGroup", true);
+    this.ctx.setConfig('autoGroup', true);
   }
+}
 
+function waitForZwibblerLoad() {
+  return new Promise((resolve) => {
+    let interval = setInterval(() => {
+      if ('Zwibbler' in window) {
+        console.log('Zwibbler loaded.');
+        clearInterval(interval);
+        resolve('');
+        return;
+      }
+      console.log('Zwibbler not loaded yet.');
+    }, 100);
+  });
 }
